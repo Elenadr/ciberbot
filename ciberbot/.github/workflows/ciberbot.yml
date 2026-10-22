@@ -1,0 +1,50 @@
+# Opción sin servidor: GitHub Actions ejecuta el bot.
+# Para que sea puntual, lo dispara cron-job.org (gratis) a la hora exacta.
+# Ver README, sección "Opción B".
+name: ciberbot
+
+on:
+  workflow_dispatch:        # lo lanza cron-job.org (o tú, a mano, desde la pestaña Actions)
+  # schedule:               # alternativa sin cron-job.org (puede llegar con retraso)
+  #   - cron: "0 6 * * *"   # 06:00 UTC = 08:00 en Madrid en verano, 07:00 en invierno
+
+concurrency:
+  group: ciberbot
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      # seen.json (noticias ya enviadas) se guarda en la caché de Actions entre ejecuciones
+      - name: Restaurar noticias ya enviadas
+        uses: actions/cache/restore@v4
+        with:
+          path: seen.json
+          key: seen-${{ github.run_id }}
+          restore-keys: seen-
+
+      - name: Ejecutar bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          AI_PROVIDER: ${{ vars.AI_PROVIDER || 'groq' }}
+        run: python main.py
+
+      - name: Guardar noticias ya enviadas
+        if: always() && hashFiles('seen.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: seen.json
+          key: seen-${{ github.run_id }}

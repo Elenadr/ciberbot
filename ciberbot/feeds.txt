@@ -1,0 +1,21 @@
+# Fuentes RSS: una por línea, formato  Nombre | URL
+# Las líneas que empiezan por # se ignoran. Añade o quita las que quieras.
+
+# --- Medios internacionales ---
+BleepingComputer | https://www.bleepingcomputer.com/feed/
+The Hacker News  | https://feeds.feedburner.com/TheHackersNews
+SecurityWeek     | https://www.securityweek.com/feed/
+The Record       | https://therecord.media/feed
+Dark Reading     | https://www.darkreading.com/rss.xml
+Krebs on Security| https://krebsonsecurity.com/feed/
+
+# --- Organismos oficiales ---
+CISA Advisories  | https://www.cisa.gov/cybersecurity-advisories/all.xml
+INCIBE-CERT Avisos     | https://www.incibe.es/incibe-cert/alerta-temprana/avisos/feed
+INCIBE-CERT Avisos SCI | https://www.incibe.es/incibe-cert/alerta-temprana/avisos-sci/feed
+
+# --- En español ---
+Una al Día (Hispasec) | https://unaaldia.hispasec.com/feed
+
+# El catálogo KEV de CISA (vulnerabilidades explotadas activamente) se consulta
+# aparte, en JSON. Se activa/desactiva con INCLUDE_CISA_KEV en el .env.
